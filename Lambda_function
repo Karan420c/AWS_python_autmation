@@ -1,0 +1,27 @@
+import json
+import boto3
+client = boto3.client("autoscaling")
+response = client.describe_auto_scaling_groups()['AutoScalingGroups']
+for asg in response:
+  if asg['AutoScalingGroupName'].startswith('ASG_Name-WITHOUT-SPOT'):  # check minimum server value from without spt autoscaling group
+      min_size=asg['MinSize']
+
+def lambda_handler(event, context):
+    if min_size==0:
+        response = client.update_auto_scaling_group(    # if without spot minimum value is 0 Then increase 3 instances in without spot autoscaling group
+        AutoScalingGroupName='ASG_Name-WITHOUT-SPOT',
+        MinSize=3,
+        MaxSize=3,
+        DesiredCapacity=3,)
+    elif min_size<=3 or min_size>=0:
+        response = client.update_auto_scaling_group(  # if without spot minimum value is 3 then it will launch 5 instance from anither autoscaling group
+        AutoScalingGroupName='ASG_Name',
+        MinSize=5,
+        MaxSize=5,
+        DesiredCapacity=5,)
+    else:
+          print("Enough Instance do nothing")
+
+    return {
+        'statusCode': 200,
+    }   
