@@ -1,0 +1,37 @@
+import boto3
+import json
+import secrets
+client = boto3.client('ec2')
+
+
+def lambda_handler(event, lambda_context):
+    response=client.request_spot_instances(
+
+    ClientToken=secrets.token_hex(1),
+    DryRun=False,
+    InstanceCount=1,
+    LaunchSpecification={
+        'SecurityGroupIds': [
+            'sg-0c6c0086fe9369513',
+        ],
+
+        'EbsOptimized': True,
+        'ImageId': 'ami-0edd5de64deb9044d',
+        'InstanceType': 'g4dn.2xlarge',
+        'KeyName': 'ubuy_admin',
+        'Monitoring': {
+            'Enabled': False
+        },
+        'Placement': {
+            'AvailabilityZone': 'eu-west-1a',
+        },
+
+    },
+    SpotPrice='1.00',
+    Type='one-time',
+
+)
+    
+    return {
+        'statusCode': 200,
+    }
