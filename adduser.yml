@@ -1,19 +1,16 @@
 ---
 - name: user module demo
-  hosts: all
+  hosts: localhost
   become: true
   tasks:
-    - name: user karan present
+    - name: adduser in system
       ansible.builtin.user:
-        name: karan
+        name: ubuy
         password: "{{ '$6$hMzD8fm2Y6Cl4Qag$MgfVOGrzeHOKbY./VDKx1JoDAqkLiIXpVKTxZPdFhX5DRv0Df30xp8Uc030E/MBiGgh813N8nY3VsxQivGzOa/' | password_hash('sha512', 'mysecretsalt') }}"
-        groups:
-          - wheel
-          - adm
         state: "present"
         shell: "/bin/bash"
         system: false
         create_home: true
-        home: "/home/karan"
-        comment: "Ansible karan"
+        home: "/home/ubuy"
+        comment: "Ansible ubuy"
         generate_ssh_key: true
